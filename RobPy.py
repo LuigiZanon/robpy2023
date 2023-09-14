@@ -11,7 +11,8 @@ def cria_vetor3(vlist: list) -> np.ndarray:
     :param vlist: Lista com as componentes [vx, vy, vz] do vetor desejado
     :return: np.ndarray: vetor (3, 1) com os valores desejados
     """
-    pass
+    
+    return np.asarray([vlist]).T
 
 
 def checa_vetor3(v: np.ndarray) -> None:
@@ -20,7 +21,8 @@ def checa_vetor3(v: np.ndarray) -> None:
     :param v:
     :return:
     """
-    pass
+    if v.shape != (3,1):
+        raise ValueError('O vetor deveria ser 3 por 1')
 
 
 def produto_escalar(v1: np.ndarray, v2: np.ndarray) -> float:
@@ -30,6 +32,10 @@ def produto_escalar(v1: np.ndarray, v2: np.ndarray) -> float:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: escalar: resultado de v1.v2
     """
+    checa_vetor3(v1)
+    checa_vetor3(v2)
+    aux = v1.T @ v2
+    return float(aux[0][0])
     pass
 
 
@@ -39,7 +45,8 @@ def norma_vetor(v: np.ndarray) -> float:
     :param v: vetor (np.ndarray) coluna de 3 elementos
     :return: escalar: norma do vetor
     """
-    pass
+    return np.sqrt(produto_escalar(v,v))
+
 
 
 def tamanho_proj_vetores(v1: np.ndarray, v2: np.ndarray) -> float:
@@ -49,7 +56,7 @@ def tamanho_proj_vetores(v1: np.ndarray, v2: np.ndarray) -> float:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: escalar: tamanho da projeção de v1 sobre v2
     """
-    pass
+    return (produto_escalar(v1,v2) / produto_escalar(v2,v2)) * norma_vetor(v2)
 
 
 def proj_vetores(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
@@ -59,7 +66,7 @@ def proj_vetores(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: vetor (np.ndarray) coluna de 3 elementos com o resultado da projeção
     """
-    pass
+    return (produto_escalar(v1,v2) / produto_escalar(v2,v2)) * v2
 
 
 def ang_vetores(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
@@ -69,7 +76,7 @@ def ang_vetores(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: escalar: ângulo em radianos
     """
-    pass
+    return np.arccos(produto_escalar(v1,v2) / (norma_vetor(v1) * norma_vetor(v2)))
 
 
 def produto_vetorial(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
