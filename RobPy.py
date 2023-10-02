@@ -86,7 +86,7 @@ def produto_vetorial(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: vetor (np.ndarray) coluna de 3 elementos com o resultado de v1 x v2
     """
-    pass
+    pass np.asarray([v1[1]*v2[3]])
 
 
 # Parte 2
