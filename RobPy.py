@@ -86,7 +86,9 @@ def produto_vetorial(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     :param v2: vetor (np.ndarray) coluna de 3 elementos
     :return: vetor (np.ndarray) coluna de 3 elementos com o resultado de v1 x v2
     """
-    pass np.asarray([v1[1]*v2[3]])
+    checa_vetor3(v1)
+    checa_vetor3(v2)
+    return np.asarray([[v1[1][0]*v2[2][0]-v1[2][0]*v2[1][0]], [v1[2][0]*v2[0][0]-v1[0][0]*v2[2][0]], [v1[0][0]*v2[1][0]-v1[1][0]*v2[0][0]]])
 
 
 # Parte 2
@@ -110,7 +112,9 @@ def plota_vetor3(v: np.ndarray,
     :param kwargs: parâmetros padrão do plot.
     :return: lista de elementos de linha do vetor plotado.
     """
-    pass
+    a = plot.plot([vo[0][0], v[0][0]+vo[0][0]], [vo[1][0], v[1][0]+vo[1][0]], [vo[2][0], v[2][0]+vo[2][0]], linewidth=4, color=color)
+    b = plot.plot(v[0][0]+vo[0][0], v[1][0]+vo[1][0], v[2][0]+vo[2][0], marker='o', markersize=10, color=color)
+    return [a, b]
 
 
 def matriz_rotacao_x(theta: float) -> np.ndarray:
@@ -120,7 +124,12 @@ def matriz_rotacao_x(theta: float) -> np.ndarray:
     :param theta: ângulo de rotação
     :return: matriz de rotação
     """
-    pass
+    s = np.sin(theta)
+    c = np.cos(theta)
+
+    return np.asarray([[1, 0, 0],
+                       [0, c, s],
+                       [0, -s, c]])
 
 
 def matriz_rotacao_y(theta: float) -> np.ndarray:
@@ -130,7 +139,12 @@ def matriz_rotacao_y(theta: float) -> np.ndarray:
     :param theta: ângulo de rotação
     :return: matriz de rotação
     """
-    pass
+    s = np.sin(theta)
+    c = np.cos(theta)
+
+    return np.asarray([[c, 0, -s],
+                       [0, 1, 0],
+                       [s, 0, c]])
 
 
 def matriz_rotacao_z(theta: float) -> np.ndarray:
@@ -140,7 +154,12 @@ def matriz_rotacao_z(theta: float) -> np.ndarray:
     :param theta: ângulo de rotação
     :return: matriz de rotação
     """
-    pass
+    s = np.sin(theta)
+    c = np.cos(theta)
+
+    return np.asarray([[c, s, 0],
+                       [-s, c, 0],
+                       [0, 0, 1]])
 
 
 # Parte 3
@@ -152,7 +171,8 @@ def checa_vetor4(v: np.ndarray) -> None:
     :param v: vetor a verificar
     :return: nenhum.
     """
-    pass
+    if v.shape != (4, 1):
+        raise ValueError('O vetor deve ser 4x1')
 
 
 def checa_matriz33(m: np.ndarray) -> None:
@@ -161,8 +181,8 @@ def checa_matriz33(m: np.ndarray) -> None:
     :param m: matriz a verificar
     :return: nenhum.
     """
-    pass
-
+    if m.shape != (3, 3):
+        raise ValueError('A matriz deve ser 3x3')
 
 def checa_matriz44(m: np.ndarray) -> None:
     """
@@ -170,7 +190,8 @@ def checa_matriz44(m: np.ndarray) -> None:
     :param m: matriz a verificar
     :return: nenhum.
     """
-    pass
+    if m.shape != (4, 4):
+        raise ValueError('A matriz deve ser 4x4')
 
 
 def cria_vetor4(v3: np.ndarray) -> np.ndarray:
@@ -179,7 +200,8 @@ def cria_vetor4(v3: np.ndarray) -> np.ndarray:
     :param v3:
     :return:
     """
-    pass
+    checa_vetor3(v3)
+    return np.append(v3, np.asarray([[1]]), axis=0)
 
 
 def checa_matriz_rotacao(m3: np.ndarray, det_tol: float = 0.01) -> None:
@@ -190,7 +212,13 @@ def checa_matriz_rotacao(m3: np.ndarray, det_tol: float = 0.01) -> None:
     :param det_tol: tolerância do valor do determinante
     :return: não há
     """
-    pass
+    checa_matriz33(m3)
+    erro = np.abs(np.linalg.det(m3)-1)
+    if det_tol < 0:
+        raise ValueError('A tolerância do determinante deve ser um valor não negativo.')
+
+    if erro > det_tol:
+        raise ValueError('Pelo valor do determinante, a matriz não é de rotação.')
 
 
 def cria_operador4(m_rot_b_a: np.ndarray = np.eye(3), v_o_a: np.ndarray = np.zeros([3, 1]), det_tol: float = 0.01) \
@@ -203,7 +231,11 @@ def cria_operador4(m_rot_b_a: np.ndarray = np.eye(3), v_o_a: np.ndarray = np.zer
     :param det_tol:
     :return:
     """
-    pass
+    checa_matriz_rotacao(m_rot_b_a, det_tol=det_tol)
+    checa_vetor3(v_o_a)
+
+    T = np.append(m_rot_b_a, v_o_a, axis=1)
+    return np.append(T, np.asarray([[0, 0, 0, 1]]), axis=0)
 
 
 def constroi_vetor(v_b: np.ndarray,
@@ -219,7 +251,12 @@ def constroi_vetor(v_b: np.ndarray,
     :param det_tol: tolerância do determinante
     :return: vetor (3, 1) na base a
     """
-    pass
+    checa_vetor3(v_b)
+
+    T = cria_operador4(m_rot_b_a=m_rot_b_a, v_o_a=v_o_a, det_tol=det_tol)
+    v_b4 = cria_vetor4(v_b)
+    v_a4 = T @ v_b4
+    return v_a4[0:3][:]
 
 
 # Parte 4
@@ -237,7 +274,14 @@ def __distancia_entre_retas_np(po1: np.ndarray, vs1: np.ndarray, po2: np.ndarray
     :param vs2: Vetor orientação da reta 1
     :return: distância entre as retas (float, positivo ou nulo)
     """
-    pass
+    checa_vetor3(po1)
+    checa_vetor3(vs1)
+    checa_vetor3(po2)
+    checa_vetor3(vs2)
+    v1 = po1 - po2
+    v2 = produto_vetorial(vs1, vs2)
+    v2 = v2/norma_vetor(v2)
+    return norma_vetor(proj_vetores(v1, v2))
 
 
 def __distancia_entre_retas_p(po1: np.ndarray, po2: np.ndarray, vs: np.ndarray) -> float:
@@ -251,7 +295,14 @@ def __distancia_entre_retas_p(po1: np.ndarray, po2: np.ndarray, vs: np.ndarray) 
     :param vs: Vetor direção de ambas as retas
     :return: distância entre as retas (float, não negativo)
     """
-    pass
+    if angtol<0:
+        raise ValueError('O valor da tolerância angular deve ser não negativo.')
+
+    ang = np.abs(ang_vetores(vs1, vs2))
+    if (ang<angtol) or (np.abs(np.pi-ang)<angtol):
+        return __distancia_entre_retas_p(po1, po2, vs1)
+    else:
+        return __distancia_entre_retas_np(po1, vs1, po2, vs2)
 
 
 def distancia_entre_retas(po1: np.ndarray, vs1: np.ndarray, po2: np.ndarray, vs2: np.ndarray, angtol=1e-3) -> float:
